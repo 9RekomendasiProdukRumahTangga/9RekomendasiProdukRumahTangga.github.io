@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kelompok 2</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap">
+    <style>
+        body {
+            font-family: 'Montserrat', sans-serif;
+            margin: 0;
+            padding: 0;
+            color: #fff;
+            background-image: url('https://images.rawpixel.com/image_200/czNmcy1wcml2YXRlL3Jhd3BpeGVsX2ltYWdlcy93ZWJzaXRlX2NvbnRlbnQvbHIvdjU0NmJhdGNoMy1teW50LTM0LWJhZGdld2F0ZXJjb2xvcl8xLmpwZw.jpg');
+            background-size: 200px;
+            background-repeat: repeat;
+            animation: moveBackground 80s linear infinite;
+            padding-top: 60px; /* Added padding to avoid overlap with the fixed bar */
+        }
+
+        @keyframes moveBackground {
+            from {
+                background-position: 0 0;
+            }
+            to {
+                background-position: 100% 100%;
+            }
+        }
+
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .header .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: #fff;
+            cursor: pointer;
+        }
+
+        .header .search-bar {
+            position: relative;
+            width: 300px;
+        }
+
+        .header .search-bar input {
+            width: 100%;
+            padding: 8px;
+            border-radius: 5px;
+            border: none;
+            outline: none;
+        }
+
+        .header .search-bar .search-icon {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+        }
+
+        .header .nav-links {
+            display: flex;
+        }
+
+        .header .nav-links a {
+            text-decoration: none;
+            color: #fff;
+            margin: 0 15px;
+            font-weight: bold;
+            transition: color 0.3s;
+        }
+
+        .header .nav-links a:hover {
+            color: #ffd700;
+        }
+
+        .product-container {
+            display: none;
+            margin-top: 70px; /* Added margin to avoid overlap with the fixed bar */
+        }
+
+        .product-container.active {
+            display: block;
+        }
+
+        .product {
+            margin-bottom: 40px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+            border-radius: 10px;
+            background-color: rgba(0, 0, 0, 0.5);
+            padding: 20px;
+            transition: transform 0.3s ease-out, box-shadow 0.3s ease-out, background-color 0.3s ease-out;
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+            animation: floating 3s infinite alternate ease-in-out;
+        }
+
+        .product::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('https://images.rawpixel.com/image_200/czNmcy1wcml2YXRlL3Jhd3BpeGVsX2ltYWdlcy93ZWJzaXRlX2NvbnRlbnQvbHIvdjU0NmJhdGNoMy1teW50LTM0LWJhZGdld2F0ZXJjb2xvcl8xLmpwZw.jpg');
+            opacity: 0.2;
+            z-index: -1;
+            transition: opacity 0.3s ease-in-out;
+        }
+
+        .product:hover::before {
+            opacity: 0.4;
+        }
+
+        .product:hover {
+            transform: scale(1.05);
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.7);
+            background-color: rgba(0, 0, 0, 0.6);
+            animation: flickerEffect 1.5s infinite alternate;
+        }
+
+        @keyframes floating {
+            0% {
+                transform: translateY(0);
+            }
+            100% {
+                transform: translateY(-10px);
+            }
+        }
+
+        @keyframes flickerEffect {
+            0%, 100% {
+                opacity: 1;
+                box-shadow: 0 12px 24px rgba(0, 0, 0, 0.7);
+            }
+            50% {
+                opacity: 0.9;
+                box-shadow: 0 8px 16px rgba(0, 0, 0, 0.5);
+            }
+        }
+
+        .product-image {
+            width: 220px;
+            height: 220px;
+            object-fit: cover;
+            border-radius: 10px;
+            border: 2px solid #fff;
+            margin-bottom: 15px;
+            opacity: 0.7;
+            transition: opacity 0.3s ease-in-out;
+        }
+
+        .product:hover .product-image {
+            opacity: 1;
+        }
+
+        .product-title {
+            font-size: 24px;
+            font-weight: bold;
+            margin-top: 10px;
+            margin-bottom: 10px;
+            color: #333;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+        }
+
+        .product-link {
+            display: inline-block;
+            text-decoration: none;
+            color: #eee;
+            margin-top: 10px;
+            font-weight: bold;
+            transition: color 0.3s, text-shadow 0.3s, background-color 0.3s;
+            padding: 5px 10px;
+            border-radius: 5px;
+            background-color: #666;
+        }
+
+        .product-link:hover {
+            color: #ffd700;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7);
+            background-color: #444;
+        }
+
+        /* Pop-up Styles */
+        .popup {
+            display: none;
+            position: fixed;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            width: 80%;
+            max-width: 500px;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            border-radius: 10px;
+            color: #fff;
+            z-index: 1000;
+        }
+
+        .popup.active {
+            display: block;
+        }
+
+        .popup .popup-content {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .popup .popup-close {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 24px;
+            cursor: pointer;
+            color: #fff;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="logo" onclick="showAllProducts()">Kelompok 2</div>
+        <div class="search-bar">
+            <input type="text" placeholder="Cari produk..." oninput="searchProducts()">
+           
+        </div>
+        <div class="nav-links">
+            <a href="#" onclick="showCategory('home')">Peralatan Rumah Tangga</a>
+            <a href="#" onclick="showCategory('kitchen')">Peralatan Dapur</a>
+        </div>
+    </div>
+
+    <!-- Produk untuk kategori Peralatan Rumah Tangga -->
+    <div id="home" class="product-container">
+        <div class="product" onclick="showPopup('Kulkas', 'Kulkas dua pintu ini memberikan ruang penyimpanan yang luas. Klik di sini untuk informasi lebih lanjut.')">
+            <img src="https://images.tokopedia.net/img/cache/700/VqbcmM/2021/5/26/7fca7895-b769-4fa2-90b3-375b55a27a5c.jpg.webp?ect=4g" alt="Kulkas" class="product-image">
+            <h2 class="product-title">Kulkas</h2>
+            <p>Beli di Tokopedia</p>
+            <a href="https://www.tokopedia.com/luxer/kulkas-dan-freezer-2-pintu-samsung-rb29nws1" class="product-link">Beli Sekarang</a>
+        </div>
+ <div class="product" onclick="showPopup('Mesin Cuci', 'Mesin cuci ini membantu mencuci pakaian dengan efisien. Klik untuk detail lebih lanjut di Tokopedia.')">
+            <img src="https://images.tokopedia.net/img/cache/700/VqbcmM/2023/9/24/52c1c2db-413f-47c6-8953-c3b70a5a8e6b.jpg.webp?ect=4g" alt="Mesin Cuci" class="product-image">
+            <h2 class="product-title">Mesin Cuci</h2>
+            <p>Beli di Tokopedia</p>
+            <a href="https://www.tokopedia.com/selektronik-13/mesin-cuci-sanken-2-tabung-7kg-tw-8663f-bu" class="product-link">Beli Sekarang</a>
+        </div>
+ <div class="product" onclick="showPopup('Kipas Angin', 'Kipas Angin ini membantu mendinginkan ruangan dengan efisien. Klik untuk detail lebih lanjut di Tokopedia.')">
+            <img src="https://images.tokopedia.net/img/cache/700/product-1/2018/10/12/403335/403335_6ae54b94-2434-4395-ad41-e4543d7e30d7_800_800.jpg" alt="Kipas Angin" class="product-image">
+            <h2 class="product-title">Kipas Angin</h2>
+            <p>Beli di Tokopedia</p>
+            <a href="https://tokopedia.com/elektronikbekasi/kipas-angin-meja-cosmos-12lda" class="product-link">Beli Sekarang</a>
+        </div>
+ <div class="product" onclick="showPopup('Smart TV', 'Smart TV ini enyediakan akses ke berbagai konten hiburan, serta memungkinkan interaksi internet.. Klik untuk detail lebih lanjut di Tokopedia.')">
+            <img src="https://images.tokopedia.net/img/cache/500-square/VqbcmM/2021/4/17/e4414edf-73c2-4f98-abeb-7ca94d9ff448.jpg" alt="Smart TV" class="product-image">
+            <h2 class="product-title">Smart TV</h2>
+            <p>Beli di Tokopedia</p>
+            <a href="https://www.tokopedia.com/jayaagungm/tv-led-samsung-smart-tv-43-inch-43-t-6500-usb-movie" class="product-link">Beli Sekarang</a>
+        </div>
+ <div class="product" onclick="showPopup('Jam Dinding', 'Jam dinding ini membantu melihat jam dengan efisien. Klik untuk detail lebih lanjut di Tokopedia.')">
+            <img src="https://images.tokopedia.net/img/cache/700/VqbcmM/2023/2/19/acc1ce02-0597-426b-8d04-0bee2019f8b6.jpg" alt="Jam Dinding" class="product-image">
+            <h2 class="product-title">Jam Dinding</h2>
+            <p>Beli di Tokopedia</p>
+            <a href="https://www.tokopedia.com/megaharloji88/jam-dinding-seiko-4038-chrome-silver-40cm-polos-putih-silver-40cm-9b334?utm_source=google&utm_medium=organic&utm_campaign=pdp" class="product-link">Beli Sekarang</a>
+        </div>
+ 
+        <div class="product" onclick="showPopup('Vacuum Cleaner', 'Vacuum cleaner ini ideal untuk menjaga kebersihan rumah. Lihat penawarannya di Tokopedia!')">
+            <img src="https://images.tokopedia.net/img/cache/700/product-1/2017/10/25/23634454/23634454_9d5a759f-8f9b-4471-9860-fb389c9891d3_807_900.jpg.webp?ect=4g" alt="Vacuum Cleaner" class="product-image">
+            <h2 class="product-title">Vacuum Cleaner</h2>
+            <p>Beli di Tokopedia</p>
+            <a href="https://www.tokopedia.com/alatproyekcom/vacuum-cleaner-krisbow-30l-kw1800307?utm_source=google&utm_medium=organic&utm_campaign=pdp-seo" class="product-link">Beli Sekarang</a>
+        </div>
+
+        <div class="product" onclick="showPopup('Setrika', 'Setrika ini memudahkan pekerjaan menyetrika Anda. Cek detailnya di Tokopedia!')">
+            <img src="https://images.tokopedia.net/img/cache/700/VqbcmM/2023/8/30/0b1ff7ae-0829-4015-abeb-a4861c1a34ae.jpg.webp?ect=4g" alt="Setrika" class="product-image">
+            <h2 class="product-title">Setrika</h2>
+            <p>Beli di Tokopedia</p>
+            <a href="https://www.tokopedia.com/utamamega/setrika-otomatis-terbaru" class="product-link">Beli Sekarang</a>
+        </div>
+
+        <div class="product" onclick="showPopup('Tempat Tidur', 'Tempat tidur ini dirancang untuk kenyamanan Anda. Temukan lebih lanjut di Tokopedia.')">
+            <img src="https://images.tokopedia.net/img/cache/700/VqbcmM/2023/7/23/c0c95abf-26cd-41e1-bef1-ed9cf8164784.jpg.webp?ect=4g" alt="Tempat Tidur" class="product-image">
+            <h2 class="product-title">Tempat Tidur</h2>
+            <p>Beli di Tokopedia</p>
+            <a href="https://www.tokopedia.com/erdiliving/divan-ranjang-winn-bed-frame-minimalis-free-ongkir-jabodetabek-180x200-82ce3" class="product-link">Beli Sekarang</a>
+        </div>
+    </div>
+
+    <!-- Produk untuk kategori Peralatan Dapur -->
+    <div id="kitchen" class="product-container">
+        <div class="product" onclick="showPopup('Rice Cooker', 'Rice Cooker adalah alat penting untuk memasak nasi dengan mudah. Cek produk ini di Tokopedia untuk detail lebih lanjut.')">
+            <img src="https://images.tokopedia.net/img/cache/700/VqbcmM/2024/5/14/69ccedeb-cad3-4004-8c91-fdeac5910e2f.jpg.webp?ect=4g" alt="Rice Cooker" class="product-image">
+            <h2 class="product-title">Rice Cooker</h2>
+            <p>Beli di Tokopedia</p>
+            <a href="https://www.tokopedia.com/philips-estore/philips-digital-rice-cooker-1-8l-fuzzy-logic-bakuhanseki-hd4515-33?src=topads" class="product-link">Beli Sekarang</a>
+        </div>
+
+        <div class="product" onclick="showPopup('Blender', 'Blender ini cocok untuk kebutuhan dapur Anda. Temukan penawaran menarik di Tokopedia!')">
+            <img src="https://images.tokopedia.net/img/cache/700/product-1/2019/1/19/11999631/11999631_096dad03-2f70-4c8c-bbf5-65630112108d_1024_1024.jpg.webp?ect=4g" alt="Blender" class="product-image">
+            <h2 class="product-title">Blender</h2>
+            <p>Beli di Tokopedia</p>
+            <a href="https://www.tokopedia.com/henbaoberjaya/sharp-blender-1-25-liter-350-watt-black-em121bk-plastik-hitam-2in1" class="product-link">Beli Sekarang</a>
+        </div>
+<div class="product" onclick="showPopup('Kompor Gas', 'Kompor Gas ini cocok untuk kebutuhan dapur Anda. Temukan penawaran menarik di Tokopedia!')">
+            <img src="https://images.tokopedia.net/img/cache/700/VqbcmM/2022/1/5/76e93b78-5d8c-4bd6-bf3e-18737d6ae122.jpg" alt="Kompor Gas" class="product-image">
+            <h2 class="product-title">Kompor Gas</h2>
+            <p>Beli di Tokopedia</p>
+            <a href="https://www.tokopedia.com/aelektronik01/kompor-gas-2-tungku-rinnai-302s?utm_source=google&utm_medium=organic&utm_campaign=pdp" class="product-link">Beli Sekarang</a>
+        </div>
+        
+        <div class="product" onclick="showPopup('Saringan', 'Saringan ini cocok untuk kebutuhan dapur Anda. Temukan penawaran menarik di Tokopedia!')">
+            <img src="https://images.tokopedia.net/img/cache/500-square/product-1/2020/8/10/18298587/18298587_d85d3b15-9468-4170-835f-b1c94905de3a_682_682" alt="Saringan" class="product-image">
+            <h2 class="product-title">Saringan</h2>
+            <p>Beli di Tokopedia</p>
+            <a href="https://www.tokopedia.com/pusathoreka/saringan-serokan-minyak-stainless-parabola-gagang-kayu-30-cm-30cm?utm_source=google&utm_medium=organic&utm_campaign=pdp" class="product-link">Beli Sekarang</a>
+        </div>
+        
+        <div class="product" onclick="showPopup('Piring', 'Piring ini cocok untuk kebutuhan dapur Anda. Temukan penawaran menarik di Tokopedia!')">
+            <img src="https://images.tokopedia.net/img/cache/700/VqbcmM/2020/11/26/db02ad56-d1b4-4bfa-bd38-f703633f6157.jpg" alt="Piring" class="product-image">
+            <h2 class="product-title">Piring</h2>
+            <p>Beli di Tokopedia</p>
+            <a href="https://www.tokopedia.com/plastik-karet/piring-makan-keramik-list-coklat-murah-ketoprak-warteg-gojek-grab?utm_source=google&utm_medium=organic&utm_campaign=pdp" class="product-link">Beli Sekarang</a>
+        </div>
+        
+        <div class="product" onclick="showPopup('Gelas', 'Gelas ini cocok untuk kebutuhan dapur Anda. Temukan penawaran menarik di Tokopedia!')">
+            <img src="https://images.tokopedia.net/img/cache/700/VqbcmM/2021/11/6/d89d8403-5c24-4331-bde6-a3624bd448fc.jpg" alt="Gelas" class="product-image">
+            <h2 class="product-title">Gelas</h2>
+            <p>Beli di Tokopedia</p>
+            <a href="https://www.tokopedia.com/tasikjaya/gelas-minum-212-400ml-gelas-beling-gelas-teh-gelas-kaca-kedaung?utm_source=google&utm_medium=organic&utm_campaign=pdp" class="product-link">Beli Sekarang</a>
+        </div>
+        
+        <div class="product" onclick="showPopup('Mangkok', 'Mangkok ini cocok untuk kebutuhan dapur Anda. Temukan penawaran menarik di Tokopedia!')">
+            <img src="https://images.tokopedia.net/img/cache/700/VqbcmM/2020/12/2/94c67a94-2635-4281-93fd-43ecab48be78.jpg" alt="Mangkok" class="product-image">
+            <h2 class="product-title">Mangkok</h2>
+            <p>Beli di Tokopedia</p>
+            <a href="https://www.tokopedia.com/hoovermelamine/mangkok-melamine-6-inch-mangkok-mie-5506-hoover-melamine?utm_source=google&utm_medium=organic&utm_campaign=pdp" class="product-link">Beli Sekarang</a>
+        </div>
+        
+        <div class="product" onclick="showPopup('Microwave', 'Microwave ini praktis untuk kebutuhan dapur sehari-hari. Temukan lebih lanjut di Tokopedia.')">
+            <img src="https://images.tokopedia.net/img/cache/700/product-1/2020/4/20/8201220/8201220_b89b3d1e-7c27-49f7-bc20-88e7bcd697c5_360_360.jpg.webp?ect=4g" alt="Microwave" class="product-image">
+            <h2 class="product-title">Microwave</h2>
+            <p>Beli di Tokopedia</p>
+            <a href="https://www.tokopedia.com/toko-perkakas99/kris-microwave-20l-putih" class="product-link">Beli Sekarang</a>
+        </div>
+    </div>
+
+    <!-- Pop-up -->
+    <div id="popup" class="popup">
+        <span class="popup-close" onclick="hidePopup()">&times;</span>
+        <div class="popup-content">
+            <h2 id="popup-title"></h2>
+            <p id="popup-description"></p>
+        </div>
+    </div>
+
+    <script>
+        function showPopup(title, description) {
+            document.getElementById('popup-title').textContent = title;
+            document.getElementById('popup-description').textContent = description;
+            document.getElementById('popup').classList.add('active');
+        }
+
+        function hidePopup() {
+            document.getElementById('popup').classList.remove('active');
+        }
+
+        function showCategory(category) {
+            document.querySelectorAll('.product-container').forEach(container => {
+                container.classList.remove('active');
+            });
+            document.getElementById(category).classList.add('active');
+        }
+
+        function showAllProducts() {
+            document.querySelectorAll('.product-container').forEach(container => {
+                container.classList.add('active');
+            });
+        }
+
+        function searchProducts() {
+            const query = document.querySelector('.search-bar input').value.toLowerCase();
+            document.querySelectorAll('.product').forEach(product => {
+                const title = product.querySelector('.product-title').textContent.toLowerCase();
+                if (title.includes(query)) {
+                    product.style.display = 'block';
+                } else {
+                    product.style.display = 'none';
+                }
+            });
+        }
+
+        // Initialize to show all products
+        document.addEventListener('DOMContentLoaded', showAllProducts);
+
+        // Change functionality of "Kelompok 2" to show all products
+        document.querySelector('.logo').addEventListener('click', showAllProducts);
+    </script>
+</body>
+</html>
